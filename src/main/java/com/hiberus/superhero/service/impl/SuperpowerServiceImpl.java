@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +18,7 @@ import com.hiberus.superhero.repository.SuperpowerRepository;
 import com.hiberus.superhero.service.SuperpowerService;
 
 @Service
+@CacheConfig(cacheNames = "Superpower")
 public class SuperpowerServiceImpl implements SuperpowerService {
 
 	private final SuperpowerRepository superpowerRepository;
@@ -27,6 +31,7 @@ public class SuperpowerServiceImpl implements SuperpowerService {
 	}
 
 	@Override
+	@Cacheable(key = "{ #root.methodName, #id }")
 	public Optional<SuperpowerDTO> findById(Long id) {
 		Optional<com.hiberus.superhero.model.Superpower> superpower = superpowerRepository.findById(id);
 		if (Boolean.FALSE.equals(superpower.isPresent())) {
@@ -37,6 +42,7 @@ public class SuperpowerServiceImpl implements SuperpowerService {
 	}
 
 	@Override
+	@Cacheable(key = "{ #root.methodName}")
 	public Collection<SuperpowerDTO> findAll() {
 		return superpowerRepository.findAll().stream()
 				.map(superhero -> objectMapperForSuperhero.convertValue(superhero, SuperpowerDTO.class))
@@ -44,6 +50,7 @@ public class SuperpowerServiceImpl implements SuperpowerService {
 	}
 
 	@Override
+	@CacheEvict(key = "{ #root.methodName }", allEntries = true)
 	public SuperpowerDTO save(SuperpowerDTO superpowerDTO) {
 		Superpower superpower = superpowerRepository
 				.save(objectMapperForSuperhero.convertValue(superpowerDTO, Superpower.class));
@@ -51,6 +58,7 @@ public class SuperpowerServiceImpl implements SuperpowerService {
 	}
 
 	@Override
+	@CacheEvict(key = "{ #root.methodName, #id}", allEntries = true)
 	public void deleteById(Long id) {
 		superpowerRepository.deleteById(id);
 	}

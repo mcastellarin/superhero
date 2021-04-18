@@ -10,6 +10,10 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,20 +27,20 @@ import com.hiberus.superhero.service.SuperheroService;
 
 @Service
 @Transactional
+@CacheConfig(cacheNames = "Superhero")
 public class SuperheroServiceImpl implements SuperheroService {
 
-	private final SuperheroRepository superheroRepository;
-	private final SuperpowerRepository superpowerRepository;
+	@Autowired
+	private SuperheroRepository superheroRepository;
+
+	@Autowired
+	private SuperpowerRepository superpowerRepository;
 
 	@Resource(name = "objectMapperForSuperhero")
 	private ObjectMapper objectMapperForSuperhero;
 
-	public SuperheroServiceImpl(SuperheroRepository superheroRepository, SuperpowerRepository superpowerRepository) {
-		this.superheroRepository = superheroRepository;
-		this.superpowerRepository = superpowerRepository;
-	}
-
 	@Override
+	@Cacheable(key = "{ #root.methodName, #id }")
 	public Optional<SuperheroDTO> findById(Long id) {
 		Optional<Superhero> superhero = superheroRepository.findById(id);
 		if (Boolean.FALSE.equals(superhero.isPresent())) {
@@ -47,6 +51,7 @@ public class SuperheroServiceImpl implements SuperheroService {
 	}
 
 	@Override
+	@Cacheable(key = "{ #root.methodName }")
 	public Collection<SuperheroDTO> findAll() {
 		return superheroRepository.findAll().stream()
 				.map(superhero -> objectMapperForSuperhero.convertValue(superhero, SuperheroDTO.class))
@@ -54,6 +59,7 @@ public class SuperheroServiceImpl implements SuperheroService {
 	}
 
 	@Override
+	@Cacheable(key = "{ #root.methodName, #name }")
 	public Collection<SuperheroDTO> findAllByName(String name) {
 		return superheroRepository.findAllByName(name).stream()
 				.map(superhero -> objectMapperForSuperhero.convertValue(superhero, SuperheroDTO.class))
@@ -61,6 +67,7 @@ public class SuperheroServiceImpl implements SuperheroService {
 	}
 
 	@Override
+	@CacheEvict(key = "{ #root.methodName }" , allEntries = true)
 	public SuperheroDTO save(SuperheroDTO superheroDTO) {
 		Superhero supeheroNew = objectMapperForSuperhero.convertValue(superheroDTO, Superhero.class);
 		Superhero superhero = superheroRepository.save(supeheroNew);
@@ -68,11 +75,13 @@ public class SuperheroServiceImpl implements SuperheroService {
 	}
 
 	@Override
+	@CacheEvict(key = "{ #root.methodName }" , allEntries = true)
 	public void deleteById(Long id) {
 		superheroRepository.deleteById(id);
 	}
 
 	@Override
+	@CacheEvict(key = "{ #root.methodName, #superheroId, #superpowerId }", allEntries = true)
 	public Boolean addSuperpowerToSuperhero(SuperheroSuperpowerRequest superheroSuperpowerRequest) {
 		Boolean result = Boolean.FALSE;
 
@@ -93,6 +102,7 @@ public class SuperheroServiceImpl implements SuperheroService {
 	}
 
 	@Override
+	@CacheEvict(key = "{ #root.methodName, #superheroId, #superpowerId }", allEntries = true)
 	public Boolean deleteSuperpowerFromSuperhero(Long superheroId, Long superpowerId) {
 		Boolean result = Boolean.FALSE;
 
