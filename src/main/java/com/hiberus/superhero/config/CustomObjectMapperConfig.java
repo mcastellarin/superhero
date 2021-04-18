@@ -12,7 +12,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @ComponentScan
 @Configuration
-public class ObjectMapperConfig {
+public class CustomObjectMapperConfig {
 	
 	@Bean(name = "objectMapperForSuperhero")
 	public ObjectMapper objectMapper() {
