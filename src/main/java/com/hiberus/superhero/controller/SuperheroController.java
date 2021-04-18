@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.hiberus.superhero.aspects.annotation.MethodExecutionInformationAnnotation;
 import com.hiberus.superhero.controller.constant.ConstantControllers;
 import com.hiberus.superhero.dto.SuperheroDTO;
 import com.hiberus.superhero.exceptions.ResourceNotFoundException;
@@ -30,13 +31,14 @@ import com.hiberus.superhero.service.SuperheroService;
 @RequestMapping("/api/superheroes")
 public class SuperheroController {
 	private final Logger LOGGER = LoggerFactory.getLogger(SuperheroController.class);
-	
+
 	private final SuperheroService superheroService;
 
 	public SuperheroController(SuperheroService superheroService) {
 		this.superheroService = superheroService;
 	}
 
+	@MethodExecutionInformationAnnotation
 	@GetMapping(value = "/getById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<SuperheroDTO> getById(@PathVariable Long id) {
 		LOGGER.debug("REST request to getById " + ConstantControllers.SUPERHERO_ENTITY + " for id: {}", id);
@@ -46,6 +48,7 @@ public class SuperheroController {
 		return ResponseEntity.ok().body(superheroDTO);
 	}
 
+	@MethodExecutionInformationAnnotation
 	@GetMapping(value = "/getAllByName/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Collection<SuperheroDTO>> getAllByName(@PathVariable String name) {
 		LOGGER.debug("REST request to getAllByName " + ConstantControllers.SUPERHERO_ENTITY + " for name: {}", name);
@@ -57,6 +60,7 @@ public class SuperheroController {
 		return ResponseEntity.ok().body(superheroes);
 	}
 
+	@MethodExecutionInformationAnnotation
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Collection<SuperheroDTO>> getAll() {
 		LOGGER.debug("REST request to getAll " + ConstantControllers.SUPERHERO_ENTITY);
@@ -67,6 +71,7 @@ public class SuperheroController {
 		return ResponseEntity.ok().body(superheroes);
 	}
 
+	@MethodExecutionInformationAnnotation
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> save(@RequestBody SuperheroDTO superheroDTO) {
 		LOGGER.debug("REST request to save " + ConstantControllers.SUPERHERO_ENTITY + " with data: {}", superheroDTO);
@@ -79,6 +84,7 @@ public class SuperheroController {
 		return ResponseEntity.created(location).build();
 	}
 
+	@MethodExecutionInformationAnnotation
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<SuperheroDTO> update(@Valid @RequestBody SuperheroDTO superheroDTO) {
 		LOGGER.debug("REST request to update " + ConstantControllers.SUPERHERO_ENTITY + " with data: {}", superheroDTO);
@@ -95,6 +101,7 @@ public class SuperheroController {
 		return ResponseEntity.ok().body(superheroEdited);
 	}
 
+	@MethodExecutionInformationAnnotation
 	@DeleteMapping("/{id}")
 	ResponseEntity<?> deleteByID(@PathVariable Long id) {
 		LOGGER.debug("REST request to delete " + ConstantControllers.SUPERHERO_ENTITY + " for id: {}", id);
@@ -104,6 +111,7 @@ public class SuperheroController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@MethodExecutionInformationAnnotation
 	@PostMapping(value = "/addSuperpowerToSuperhero", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> addSuperpowerToSuperhero(@Valid @RequestBody SuperheroSuperpowerRequest superheroSuperpowerRequest) {
 		evaluateResultOperation(superheroService.addSuperpowerToSuperhero(superheroSuperpowerRequest),
@@ -117,6 +125,7 @@ public class SuperheroController {
 		return ResponseEntity.created(location).build();
 	}
 
+	@MethodExecutionInformationAnnotation
 	@DeleteMapping(value = "/deleteSuperpowerFromSuperhero/{superheroId}/{superpowerId}")
 	public ResponseEntity<?> deleteSuperpowerFromSuperhero(@PathVariable Long superheroId, @PathVariable Long superpowerId) {
 		evaluateResultOperation(superheroService.deleteSuperpowerFromSuperhero(superheroId, superpowerId),
