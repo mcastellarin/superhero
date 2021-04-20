@@ -91,12 +91,8 @@ public class SuperheroController {
 		SuperheroDTO superheroEdited = superheroService.findById(superheroDTO.getId())
 				.orElseThrow(() -> new ResourceNotFoundException(ConstantControllers.SUPERHERO_ENTITY, ConstantControllers.ID, superheroDTO.getId().toString()));
 
-		superheroEdited = SuperheroDTO.builder()
-				.withName(superheroDTO.getName())
-				.withSecretIdentity(superheroDTO.getSecretIdentity())
-				.withNameSecretIdentity(superheroDTO.getNameSecretIdentity())
-				.withOrigin(superheroDTO.getOrigin())
-				.build();
+		superheroEdited = new SuperheroDTO(superheroDTO.getName(), superheroDTO.getSecretIdentity(),
+				superheroDTO.getNameSecretIdentity(), superheroDTO.getOrigin(), null);
 		superheroService.save(superheroEdited);
 		return ResponseEntity.ok().body(superheroEdited);
 	}

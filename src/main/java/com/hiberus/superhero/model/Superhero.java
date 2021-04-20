@@ -1,6 +1,5 @@
 package com.hiberus.superhero.model;
 
-import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -23,6 +22,15 @@ import org.hibernate.envers.NotAudited;
 import com.hiberus.superhero.model.enums.Origin;
 import com.hiberus.superhero.model.enums.SecretIdentity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Audited
 @AuditOverride(forClass = BaseEntity.class, isAudited = true)
@@ -53,77 +61,11 @@ public class Superhero extends BaseEntity {
 			@JoinColumn(name = "superhero_id") }, inverseJoinColumns = { @JoinColumn(name = "superpower_id") })
 	private Set<Superpower> superpowers;
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public SecretIdentity getSecretIdentity() {
-		return secretIdentity;
-	}
-
-	public void setSecretIdentity(SecretIdentity secretIdentity) {
-		this.secretIdentity = secretIdentity;
-	}
-
-	public String getNameSecretIdentity() {
-		return nameSecretIdentity;
-	}
-
-	public void setNameSecretIdentity(String nameSecretIdentity) {
-		this.nameSecretIdentity = nameSecretIdentity;
-	}
-
-	public Origin getOrigin() {
-		return origin;
-	}
-
-	public void setOrigin(Origin origin) {
-		this.origin = origin;
-	}
-
-	public Set<Superpower> getSuperpowers() {
-		return superpowers;
-	}
-
-	public void setSuperpowers(Set<Superpower> superpowers) {
-		this.superpowers = superpowers;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(getId());
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return Boolean.TRUE;
-		}
-		if (Objects.isNull(obj) || !getClass().equals(obj.getClass())) {
-			return Boolean.FALSE;
-		}
-		Superhero superhero = (Superhero) obj;
-		if (Objects.isNull(superhero.getId()) || Objects.isNull(getId())) {
-			return Boolean.FALSE;
-		}
-		return Objects.equals(getId(), superhero.getId());
-	}
-
-	@Override
-	public String toString() {
-		return "Superhero [name=" + getName() + ", secretIdentity=" + getSecretIdentity() + ", nameSecretIdentity="
-				+ getNameSecretIdentity() + ", origin=" + getOrigin() + ", superpowers=" + getSuperpowers() + "]";
-	}
-
 	public Boolean addSuperpower(Superpower superpower) {
-		return getSuperpowers().add(superpower);
+		return superpowers.add(superpower);
 	}
 
 	public Boolean removeSuperpower(Superpower superpower) {
-		return getSuperpowers().remove(superpower);
+		return superpowers.remove(superpower);
 	}
 }

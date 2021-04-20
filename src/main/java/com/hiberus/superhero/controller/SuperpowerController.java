@@ -71,8 +71,7 @@ public class SuperpowerController {
 		SuperpowerDTO superpowerEdited = superpowerService.findById(superpowerDTO.getId()).orElseThrow(
 				() -> new ResourceNotFoundException(ConstantControllers.SUPERPOWER_ENTITY, ConstantControllers.ID, superpowerDTO.getId().toString()));
 
-		superpowerEdited = SuperpowerDTO.builder().withName(superpowerDTO.getName())
-				.withDescription(superpowerDTO.getDescription()).build();
+		superpowerEdited = new SuperpowerDTO(superpowerDTO.getName(), superpowerDTO.getDescription());
 		superpowerService.save(superpowerEdited);
 		return ResponseEntity.ok().body(superpowerEdited);
 	}

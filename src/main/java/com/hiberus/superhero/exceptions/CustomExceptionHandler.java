@@ -44,24 +44,16 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		e.getSupportedMediaTypes().forEach(smt -> builder.append(smt).append(", "));
 		details.add(builder.toString());
 
-		CustomErrorResponse error = CustomErrorResponse.builder()
-				.withTimestamp(Instant.now())
-				.withStatus(HttpStatus.BAD_REQUEST)
-				.withMessage(CustomExceptionErrorMessageConstant.ERROR_MESSAGE_INVALID_JSON)
-				.withErrors(details)
-				.build();
+		CustomErrorResponse error = new CustomErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST,
+				CustomExceptionErrorMessageConstant.ERROR_MESSAGE_INVALID_JSON, details);
 		return ResponseEntityBuilder.build(error);
 	}
 
 	// triggers when the JSON is malformed
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e, HttpHeaders headers, HttpStatus status, WebRequest request) {
-		CustomErrorResponse error = CustomErrorResponse.builder()
-				.withTimestamp(Instant.now())
-				.withStatus(HttpStatus.BAD_REQUEST)
-				.withMessage(CustomExceptionErrorMessageConstant.ERROR_MESSAGE_MALFORMED_JSON_REQUEST)
-				.withErrors(Arrays.asList(e.getMessage()))
-				.build();
+		CustomErrorResponse error = new CustomErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST,
+				CustomExceptionErrorMessageConstant.ERROR_MESSAGE_MALFORMED_JSON_REQUEST, Arrays.asList(e.getMessage()));
 
 		return ResponseEntityBuilder.build(error);
 	}
@@ -76,12 +68,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 					.collect(Collectors.toList());
 		}
 
-		CustomErrorResponse error = CustomErrorResponse.builder()
-				.withTimestamp(Instant.now())
-				.withStatus(HttpStatus.BAD_REQUEST)
-				.withMessage(CustomExceptionErrorMessageConstant.ERROR_MESSAGE_VALIDATION_ERRORS)
-				.withErrors(details)
-				.build();
+		CustomErrorResponse error = new CustomErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST,
+				CustomExceptionErrorMessageConstant.ERROR_MESSAGE_VALIDATION_ERRORS, details);
 
 		return ResponseEntityBuilder.build(error);
 	}
@@ -91,12 +79,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException e, HttpHeaders headers, HttpStatus status, WebRequest request) {
 		List<String> details = Arrays.asList(e.getParameterName() + StringUtils.SPACE + "parameter is missing");
 
-		CustomErrorResponse error = CustomErrorResponse.builder()
-				.withTimestamp(Instant.now())
-				.withStatus(HttpStatus.BAD_REQUEST)
-				.withMessage(CustomExceptionErrorMessageConstant.ERROR_MESSAGE_MISSING_PARAMETERS)
-				.withErrors(details)
-				.build();
+		CustomErrorResponse error = new CustomErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST,
+				CustomExceptionErrorMessageConstant.ERROR_MESSAGE_MISSING_PARAMETERS, details);
 
 		return ResponseEntityBuilder.build(error);
 	}
@@ -104,12 +88,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	// triggers when a parameter's type does not match
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	protected ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e, WebRequest request) {
-		CustomErrorResponse error = CustomErrorResponse.builder()
-				.withTimestamp(Instant.now())
-				.withStatus(HttpStatus.BAD_REQUEST)
-				.withMessage(CustomExceptionErrorMessageConstant.ERROR_MESSAGE_MISMATCH_TYPE)
-				.withErrors(Arrays.asList(e.getMessage()))
-				.build();
+		CustomErrorResponse error = new CustomErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST,
+				CustomExceptionErrorMessageConstant.ERROR_MESSAGE_MISMATCH_TYPE, Arrays.asList(e.getMessage()));
 
 		return ResponseEntityBuilder.build(error);
 	}
@@ -117,12 +97,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	// triggers when @Validated fails
 	@ExceptionHandler(ConstraintViolationException.class)
 	public ResponseEntity<?> handleConstraintViolationException(Exception e, WebRequest request) {
-		CustomErrorResponse error = CustomErrorResponse.builder()
-				.withTimestamp(Instant.now())
-				.withStatus(HttpStatus.BAD_REQUEST)
-				.withMessage(CustomExceptionErrorMessageConstant.ERROR_MESSAGE_CONSTRAINT_VIOLATION)
-				.withErrors(Arrays.asList(e.getMessage()))
-				.build();
+		CustomErrorResponse error = new CustomErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST,
+				CustomExceptionErrorMessageConstant.ERROR_MESSAGE_CONSTRAINT_VIOLATION, Arrays.asList(e.getMessage()));
 
 		return ResponseEntityBuilder.build(error);
 	}
@@ -130,12 +106,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	// triggers when there is not resource with the specified ID in BDD
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException e) {
-		CustomErrorResponse error = CustomErrorResponse.builder()
-				.withTimestamp(Instant.now())
-				.withStatus(HttpStatus.NOT_FOUND)
-				.withMessage(CustomExceptionErrorMessageConstant.ERROR_MESSAGE_RESOURCE_NOT_FOUND)
-				.withErrors(Arrays.asList(e.getMessage()))
-				.build();
+		CustomErrorResponse error = new CustomErrorResponse(Instant.now(), HttpStatus.NOT_FOUND,
+				CustomExceptionErrorMessageConstant.ERROR_MESSAGE_RESOURCE_NOT_FOUND, Arrays.asList(e.getMessage()));
 
 		return ResponseEntityBuilder.build(error);
 	}
@@ -145,24 +117,17 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 		List<String> details = new ArrayList<>();
 		details.add(String.format("Could not find the %s method for URL %s", ex.getHttpMethod(), ex.getRequestURL()));
-		CustomErrorResponse error = CustomErrorResponse.builder()
-				.withTimestamp(Instant.now())
-				.withStatus(HttpStatus.BAD_REQUEST)
-				.withMessage(CustomExceptionErrorMessageConstant.ERROR_MESSAGE_METHOD_NOT_FOUND)
-				.withErrors(details)
-				.build();
+
+		CustomErrorResponse error = new CustomErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST,
+				CustomExceptionErrorMessageConstant.ERROR_MESSAGE_METHOD_NOT_FOUND, details);
 
 		return ResponseEntityBuilder.build(error);
 	}
 
 	@ExceptionHandler({ Exception.class })
 	public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
-		CustomErrorResponse error = CustomErrorResponse.builder()
-				.withTimestamp(Instant.now())
-				.withStatus(HttpStatus.BAD_REQUEST)
-				.withMessage(CustomExceptionErrorMessageConstant.ERROR_MESSAGE_GENERIC)
-				.withErrors(Arrays.asList(ex.getLocalizedMessage()))
-				.build();
+		CustomErrorResponse error = new CustomErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST,
+				CustomExceptionErrorMessageConstant.ERROR_MESSAGE_GENERIC, Arrays.asList(ex.getLocalizedMessage()));
 
 		return ResponseEntityBuilder.build(error);
 	}

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -51,27 +52,19 @@ public class SuperheroServiceImplTest {
 	private SuperpowerRepository superpowerRepository;
 
 	private Superhero superhero;
+	private static final String SEARCH_BY_NAME = "man";
 
 	@Before
 	public void setUp() {
-		String nameSuperhero = "man";
 		List<Superhero> superheroes = new ArrayList<>();
-
-		superhero = new Superhero();
-		superhero.setName("BAT-MAN");
-		superhero.setSecretIdentity(SecretIdentity.CIVIL_IDENTITY);
-		superhero.setNameSecretIdentity("BRUCE WAYNE");
-		superhero.setOrigin(Origin.OTHERS);
+		superhero = new Superhero("BAT-MAN", SecretIdentity.CIVIL_IDENTITY, "BRUCE WAYNE", Origin.OTHERS, new HashSet<>());
 		superheroes.add(superhero);
-
-		Mockito.when(superheroRepository.findAllByName(nameSuperhero)).thenReturn(superheroes);
+		Mockito.when(superheroRepository.findAllByName(SEARCH_BY_NAME)).thenReturn(superheroes);
 	}
 
 	@Test
 	public void findByAllName() {
-		String nameSuperhero = "man";
-		Collection<SuperheroDTO> superheroes = superheroService.findAllByName(nameSuperhero);
-
+		Collection<SuperheroDTO> superheroes = superheroService.findAllByName(SEARCH_BY_NAME);
 		assertFalse(CollectionUtils.isEmpty(superheroes));
 		assertThat(superheroes.size()).isEqualTo(NumberUtils.INTEGER_ONE);
 		assertTrue(superheroes.stream().findFirst().isPresent());

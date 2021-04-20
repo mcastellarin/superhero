@@ -4,6 +4,13 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class SuperheroSuperpowerRequest implements Serializable {
 	private static final long serialVersionUID = -3454756803545441698L;
 
@@ -12,20 +19,4 @@ public class SuperheroSuperpowerRequest implements Serializable {
 
 	@NotNull
 	private Long superpowerId;
-
-	public Long getSuperheroId() {
-		return superheroId;
-	}
-
-	public void setSuperheroId(Long superheroId) {
-		this.superheroId = superheroId;
-	}
-
-	public Long getSuperpowerId() {
-		return superpowerId;
-	}
-
-	public void setSuperpowerId(Long superpowerId) {
-		this.superpowerId = superpowerId;
-	}
 }
