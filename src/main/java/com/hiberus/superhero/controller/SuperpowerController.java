@@ -75,10 +75,12 @@ public class SuperpowerController {
 	public ResponseEntity<SuperpowerDTO> update(@RequestBody SuperpowerDTO superpowerDTO) {
 		LOGGER.debug("REST request to update Superpower: {}", superpowerDTO);
 
-		SuperpowerDTO superpowerToEdit = superpowerService.findById(superpowerDTO.getId()).orElseThrow(
+		SuperpowerDTO superpowerSaved = superpowerService.findById(superpowerDTO.getId()).orElseThrow(
 				() -> new ResourceNotFoundException(ConstantControllers.SUPERPOWER_ENTITY, ConstantControllers.ID, superpowerDTO.getId().toString()));
 
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		SuperpowerDTO superpowerToEdit = new SuperpowerDTO(superpowerDTO.getName(), superpowerDTO.getDescription());
+		superpowerToEdit.setId(superpowerSaved.getId());
 		superpowerToEdit.setLastModifiedBy(userDetails.getUsername());
 		superpowerToEdit.setLastModifiedDate(Instant.now());
 		return ResponseEntity.ok().body(superpowerService.save(superpowerToEdit));

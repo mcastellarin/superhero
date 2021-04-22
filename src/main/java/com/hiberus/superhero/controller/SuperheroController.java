@@ -95,10 +95,13 @@ public class SuperheroController {
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<SuperheroDTO> update(@Valid @RequestBody SuperheroDTO superheroDTO) {
 		LOGGER.debug("REST request to update " + ConstantControllers.SUPERHERO_ENTITY + " with data: {}", superheroDTO);
-		SuperheroDTO superheroToEdit = superheroService.findById(superheroDTO.getId())
+		SuperheroDTO superheroSaved = superheroService.findById(superheroDTO.getId())
 				.orElseThrow(() -> new ResourceNotFoundException(ConstantControllers.SUPERHERO_ENTITY, ConstantControllers.ID, superheroDTO.getId().toString()));
 
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		SuperheroDTO superheroToEdit = new SuperheroDTO(superheroDTO.getName(), superheroDTO.getSecretIdentity(), superheroDTO.getNameSecretIdentity(), superheroDTO.getOrigin(), null);
+		superheroToEdit.setId(superheroSaved.getId());
 		superheroToEdit.setLastModifiedBy(userDetails.getUsername());
 		superheroToEdit.setLastModifiedDate(Instant.now());
 		return ResponseEntity.ok().body(superheroService.save(superheroToEdit));

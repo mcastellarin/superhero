@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -34,12 +35,14 @@ import lombok.Setter;
 @Entity
 @Audited
 @AuditOverride(forClass = BaseEntity.class, isAudited = true)
-@Table(name = "superheroes", schema = "superheroes")
+@Table(name = "superheroes", schema = "superheroes", uniqueConstraints = {
+		@UniqueConstraint(name = "UK_SUPERHEROES_NAME", columnNames = { "name" }),
+		@UniqueConstraint(name = "UK_SUPERHEROES_NAME_SECRET_IDENTITY", columnNames = { "name_secret_identity" }) })
 public class Superhero extends BaseEntity {
 	private static final long serialVersionUID = -1162373886607461742L;
 
 	@NotBlank
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String name;
 
 	@NotNull
@@ -47,7 +50,7 @@ public class Superhero extends BaseEntity {
 	@Column(name = "secret_identity", nullable = false)
 	private SecretIdentity secretIdentity;
 
-	@Column(name = "name_secret_identity")
+	@Column(name = "name_secret_identity", unique = true)
 	private String nameSecretIdentity;
 
 	@NotNull
