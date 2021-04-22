@@ -1,6 +1,7 @@
 package com.hiberus.superhero.controller;
 
 import java.net.URI;
+import java.time.Instant;
 import java.util.Collection;
 
 import javax.validation.Valid;
@@ -10,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,6 +78,10 @@ public class SuperheroController {
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> save(@RequestBody SuperheroDTO superheroDTO) {
 		LOGGER.debug("REST request to save " + ConstantControllers.SUPERHERO_ENTITY + " with data: {}", superheroDTO);
+
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		superheroDTO.setCreatedBy(userDetails.getUsername());
+		superheroDTO.setCreatedDate(Instant.now());
 		SuperheroDTO superheroSaved = superheroService.save(superheroDTO);
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -88,13 +95,13 @@ public class SuperheroController {
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<SuperheroDTO> update(@Valid @RequestBody SuperheroDTO superheroDTO) {
 		LOGGER.debug("REST request to update " + ConstantControllers.SUPERHERO_ENTITY + " with data: {}", superheroDTO);
-		SuperheroDTO superheroEdited = superheroService.findById(superheroDTO.getId())
+		SuperheroDTO superheroToEdit = superheroService.findById(superheroDTO.getId())
 				.orElseThrow(() -> new ResourceNotFoundException(ConstantControllers.SUPERHERO_ENTITY, ConstantControllers.ID, superheroDTO.getId().toString()));
 
-		superheroEdited = new SuperheroDTO(superheroDTO.getName(), superheroDTO.getSecretIdentity(),
-				superheroDTO.getNameSecretIdentity(), superheroDTO.getOrigin(), null);
-		superheroService.save(superheroEdited);
-		return ResponseEntity.ok().body(superheroEdited);
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		superheroToEdit.setLastModifiedBy(userDetails.getUsername());
+		superheroToEdit.setLastModifiedDate(Instant.now());
+		return ResponseEntity.ok().body(superheroService.save(superheroToEdit));
 	}
 
 	@MethodExecutionInformationAnnotation

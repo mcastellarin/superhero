@@ -16,7 +16,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class CustomSwaggerConfig {
 
 	@Bean
-	public Docket productApi() {
+	public Docket superheroApi() {
 		return new Docket(DocumentationType.SWAGGER_2).select()
 				.apis(RequestHandlerSelectors.basePackage("com.hiberus.superhero.controller"))
 				.paths(regex("/api/.*"))
@@ -26,7 +26,7 @@ public class CustomSwaggerConfig {
 	private static ApiInfo getApiInfo() {
 		return new ApiInfoBuilder()
 				.title("Superhero REST API")
-				.description("hiberus technical project")
+				.description("Hiberus technical project")
 				.version("1.0.0").contact(new Contact("Mailen Castellarin", "https://ar.linkedin.com/in/mcastellarin20", "mailencastellarin@gmail.com"))
 				.build();
 	}

@@ -22,9 +22,11 @@ public class BaseEntityDTO implements Serializable {
 	private String createdBy;
 
 	@ReadOnlyProperty
-	private Instant createdDate = Instant.now();
+	private Instant createdDate;
 
+	@ReadOnlyProperty
 	private String lastModifiedBy;
 
-	private Instant lastModifiedDate = Instant.now();
+	@ReadOnlyProperty
+	private Instant lastModifiedDate;
 }

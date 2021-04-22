@@ -39,7 +39,7 @@ public class SpringBootPersistenceIntegrationTest {
 		Superhero superheroNew = new Superhero("WONDER WOMAN", SecretIdentity.CIVIL_IDENTITY, "DIANA PRINCE",
 				Origin.MYTHOLOGICAL_GODS, null);
 		superheroNew.setCreatedDate(Instant.now());
-		superheroNew.setCreatedBy("ADMIN");
+		superheroNew.setCreatedBy("");
 
 		superheroNew = superheroRepository.save(superheroNew);
 		assertNotNull(superheroNew);
@@ -50,7 +50,7 @@ public class SpringBootPersistenceIntegrationTest {
 	public void saveSuperpowerEntity() {
 		Superpower superpowerNew = new Superpower("INMORTALITY", StringUtils.EMPTY, null);
 		superpowerNew.setCreatedDate(Instant.now());
-		superpowerNew.setCreatedBy("ADMIN");
+		superpowerNew.setCreatedBy("admin");
 
 		superpowerNew = superpowerRepository.save(superpowerNew);
 		assertNotNull(superpowerNew);
@@ -63,12 +63,12 @@ public class SpringBootPersistenceIntegrationTest {
 
 		Superpower sp1New = new Superpower("REFLEXES", StringUtils.EMPTY, null);
 		sp1New.setCreatedDate(Instant.now());
-		sp1New.setCreatedBy("ADMIN");
+		sp1New.setCreatedBy("admin");
 		superpowers.add(sp1New);
 
 		Superpower sp2New = new Superpower("SUPER VELOCITY", "Is a superpower that allows a person to move faster than humanly possible", null);
 		sp2New.setCreatedDate(Instant.now());
-		sp2New.setCreatedBy("ADMIN");
+		sp2New.setCreatedBy("admin");
 		superpowers.add(sp2New);
 
 		superpowers = superpowerRepository.saveAll(superpowers);
@@ -78,7 +78,7 @@ public class SpringBootPersistenceIntegrationTest {
 		Superhero superheroNew = new Superhero("WONDER WOMAN", SecretIdentity.CIVIL_IDENTITY, "DIANA PRINCE",
 				Origin.MYTHOLOGICAL_GODS, null);
 		superheroNew.setCreatedDate(Instant.now());
-		superheroNew.setCreatedBy("ADMIN");
+		superheroNew.setCreatedBy("admin");
 
 		superheroNew = superheroRepository.save(superheroNew);
 		assertNotNull(superheroNew);

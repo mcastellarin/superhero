@@ -29,9 +29,8 @@ public abstract class BaseEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	// TODO: change nullable false with implementation security api
 	@CreatedBy
-	@Column(name = "created_by", nullable = true, length = 50, updatable = false)
+	@Column(name = "created_by", nullable = false, length = 50, updatable = false)
 	private String createdBy;
 
 	@CreatedDate

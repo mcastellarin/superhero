@@ -69,9 +69,8 @@ public class SuperheroServiceImpl implements SuperheroService {
 	@Override
 	@CacheEvict(key = "{ #root.methodName }" , allEntries = true)
 	public SuperheroDTO save(SuperheroDTO superheroDTO) {
-		Superhero supeheroNew = objectMapperForSuperhero.convertValue(superheroDTO, Superhero.class);
-		Superhero superhero = superheroRepository.save(supeheroNew);
-		return objectMapperForSuperhero.convertValue(superhero, SuperheroDTO.class);
+		Superhero supehero = objectMapperForSuperhero.convertValue(superheroDTO, Superhero.class);
+		return objectMapperForSuperhero.convertValue(superheroRepository.save(supehero), SuperheroDTO.class);
 	}
 
 	@Override

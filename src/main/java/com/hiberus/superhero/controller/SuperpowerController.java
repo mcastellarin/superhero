@@ -1,6 +1,7 @@
 package com.hiberus.superhero.controller;
 
 import java.net.URI;
+import java.time.Instant;
 import java.util.Collection;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -8,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,6 +59,10 @@ public class SuperpowerController {
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> save(@RequestBody SuperpowerDTO superpowerDTO) {
 		LOGGER.debug("REST request to save Superpower: {}", superpowerDTO);
+
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		superpowerDTO.setCreatedBy(userDetails.getUsername());
+		superpowerDTO.setCreatedDate(Instant.now());
 		SuperpowerDTO superpowerSaved = superpowerService.save(superpowerDTO);
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -68,12 +75,13 @@ public class SuperpowerController {
 	public ResponseEntity<SuperpowerDTO> update(@RequestBody SuperpowerDTO superpowerDTO) {
 		LOGGER.debug("REST request to update Superpower: {}", superpowerDTO);
 
-		SuperpowerDTO superpowerEdited = superpowerService.findById(superpowerDTO.getId()).orElseThrow(
+		SuperpowerDTO superpowerToEdit = superpowerService.findById(superpowerDTO.getId()).orElseThrow(
 				() -> new ResourceNotFoundException(ConstantControllers.SUPERPOWER_ENTITY, ConstantControllers.ID, superpowerDTO.getId().toString()));
 
-		superpowerEdited = new SuperpowerDTO(superpowerDTO.getName(), superpowerDTO.getDescription());
-		superpowerService.save(superpowerEdited);
-		return ResponseEntity.ok().body(superpowerEdited);
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		superpowerToEdit.setLastModifiedBy(userDetails.getUsername());
+		superpowerToEdit.setLastModifiedDate(Instant.now());
+		return ResponseEntity.ok().body(superpowerService.save(superpowerToEdit));
 	}
 
 	@DeleteMapping("/{id}")

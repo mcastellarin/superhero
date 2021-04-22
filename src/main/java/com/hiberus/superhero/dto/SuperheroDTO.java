@@ -8,7 +8,6 @@ import javax.validation.constraints.Size;
 
 import org.springframework.data.annotation.ReadOnlyProperty;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +15,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class SuperheroDTO extends BaseEntityDTO {
 	private static final long serialVersionUID = 5452111326565875622L;
 
